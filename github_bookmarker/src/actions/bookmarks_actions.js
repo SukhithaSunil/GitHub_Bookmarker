@@ -3,6 +3,8 @@ export const GET_BOOKMARKS = 'GET_BOOKMARKS';
 export const REMOVE_BOOKMARK = 'REMOVE_BOOKMARK';
 export const SELECT_BOOKMARK = 'SELECT_BOOKMARK';
 export const UNSELECT_BOOKMARK = 'UNSELECT_BOOKMARK';
+export const  EDIT_BOOKMARK = 'EDIT_BOOKMARK';
+
 
 export const ADD_BOOKMARK = 'ADD_BOOKMARK';
 
@@ -23,6 +25,11 @@ export const selectBookMark = bookMark => ({
 
 export const unSelectBookMark = () => ({
     type: UNSELECT_BOOKMARK
+})
+
+export const editBookMark = updatedBookMark => ({
+    type: EDIT_BOOKMARK,
+    updatedBookMark
 })
 
 

@@ -8,34 +8,33 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { connect } from "react-redux";
 import { unSelectRepositories } from "../actions/respoDetails_actions";
-import { addBookMark } from "../actions/bookmarks_actions";
 
 
 
-function AddBookMarkAlert({ open, handleClickOpen, selectedRepository ,addBookMark,unSelectRepositories,handleClickClose}) {
-  const [name, setName] = React.useState("");
+function AddBookMarkAlert({ open, handleClose, handleBookMark ,handleRemove,dialogeTitle}) {
+ 
+  const [name, setName] = React.useState("");// selected bookmark name "" for addig bookmark
   const handlevalue = (e) => {
     console.log(e.target.value);
     setName(e.target.value);
   };
 
-  const handleAddBookMark = () => {
-    handleClickClose();
-    const repository = {...selectedRepository,customizedName : name};
-    repository.saved = true;
-    console.log(repository.customizedName);
-    addBookMark(repository);
+  const handleChanges = () => { // on add or edit button
+    handleClose();//close dialoge
+    handleBookMark(name);// add or edit 
+    
   };
+  
   return (
     <div>
       <Dialog
         open={open}
-        onClose={handleClickOpen}
+        onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">Add A Bookmark</DialogTitle>
         <DialogContent>
-          <DialogContentText>Enter a name</DialogContentText>
+          <DialogContentText>{dialogeTitle}</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -50,11 +49,11 @@ function AddBookMarkAlert({ open, handleClickOpen, selectedRepository ,addBookMa
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClickClose} color="primary">
-            Cancel
+          <Button onClick={handleRemove} color="primary">
+            Remove
           </Button>
-          <Button onClick={handleAddBookMark} color="primary">
-            Add
+          <Button onClick={handleChanges} color="primary">
+            Done
           </Button>
         </DialogActions>
       </Dialog>
@@ -62,11 +61,10 @@ function AddBookMarkAlert({ open, handleClickOpen, selectedRepository ,addBookMa
   );
 }
 const mapStateToProps = (state) => ({
-    selectedRepository: state.reposDetails.selectedRepository
+  selectedBookmark: state.bookmarks.selectedBookmark
 });
 
 const mapDispatchToProps = {
-    addBookMark,
     unSelectRepositories
 };
 

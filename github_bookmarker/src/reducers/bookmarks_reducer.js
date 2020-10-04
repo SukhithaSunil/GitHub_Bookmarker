@@ -31,7 +31,17 @@ export default function bookmarks_reducer(state = initialState, action) {
         ...state,
         selectedBookmark: action.bookMark,
       };
-
+    case actions.EDIT_BOOKMARK:
+      return {
+        ...state,
+        savedBookMarks: state.savedBookMarks.map((bookMark) =>
+          bookMark.id === action.updatedBookMark.id
+            ? // transform the one with a matching id
+              action.updatedBookMark
+            : // otherwise return original todo
+              bookMark
+        ),
+      };
     default:
       return state;
   }
