@@ -1,58 +1,96 @@
 import React from "react";
 import { connect } from "react-redux";
 import BookMarksList from "../components/BookMarksList";
-import { fetchRepos } from "../actions/respoDetails_actions";
-import {Link} from 'react-router-dom'
+import ResultsModal from "../components/ResultsModal";
+
+import { fetchRepos, fetchReposByName } from "../actions/respoDetails_actions";
+import SearchBySelection from "../components/SearchBySelection";
+import SearchRepo from "../components/SearchRepo";
+import Grid from "@material-ui/core/Grid";
+import { fetchUsers } from "../actions/gitUsers_actions";
+import Users from "./Users";
 
 class Search extends React.Component {
   state = {
-    query: "",
+    queryString: "",
+    searchType: "repos",
+    userId: "",
+    open: false,
   };
-  
-  handleReposSearch = () => {
-    var repos = this.state.query;
-    console.log(this.props);
-    this.props.fetchRepos(repos);
+  componentDidMount() {
+    console.log("componentDidMount");
+  }
+  handleClickOpen = () => {
+    this.setState({ open: true });
   };
-  
-  handleInputChange = (event) => {
-    const query = event.target.value;
-    this.setState({
-      query: query,
-    });
+
+  handleClose = () => {
+    this.setState({ open: false });
   };
+  UNSAFE_componentWillReceiveProps (nextProps) {
+    console.log("componentWillReceiveProps");
+    console.log(this.props.match.params.id);
+    if (nextProps.match.params.id !== this.props.match.params.id) {
+      this.setState({ query: nextProps.match.params.id });
+
+      this.props.fetchReposByName(nextProps.match.params.id);
+      this.handleClickOpen();
+    }
+  }
+  // componentDidUpdate(prevProps) {
+  //   console.log("componentDidUpdate");
+  //   console.log(this.props.match.params.id);
+  //   if (this.state.userId !== this.props.match.params.id) {
+  //     this.setState({ userId: this.props.match.params.id });
+  //   }
+
+  // }
+  handleSearch = (query) => {
+    this.setState({ queryString: query });
+    console.log("handleSearch" + this.state.searchType);
+    this.state.searchType === "repos"
+      ? this.props.fetchReposByName(query)
+      : this.props.fetchUsers(query);
+   
+  };
+
+  handleSearchBy = (searchBy) => {
+    console.log("seraach by");
+
+    this.setState({ searchType: searchBy });
+  };
+
   renderPosts = () => {
-    console.log(this.props);
-    if (this.props.loading) return <p>Loading posts...</p>;
-    if (this.props.error) return <p>Unable to display posts.</p>;
+    console.log("renderPosts");
+
     return (
       <div>
-        <BookMarksList/>
-        {/* {this.state.filteredData.map((i) => (
-                // <img className="photo" src={i.avatar}></img>
-                <li key ={i.id}><a rel="nooliener noreferrer" href={i.url} target="_blank">{i.name}{" "}{i.owner}</a></li>
-              ))} */}
+        {this.state.searchType === "repos" ? <BookMarksList /> : <Users />}
+        <ResultsModal handleClose = {this.handleClose} open= {this.state.open} name={this.state.query}/>;
       </div>
     );
   };
 
   render() {
     return (
-      <div className="searchForm">
-        <form>
-          <input
-            placeholder="Search for..."
-            value={this.state.query}
-            onChange={this.handleInputChange}
-          />
-        </form>
-        <button onClick={this.handleReposSearch}>go</button>
-      
-  <Link to="/bookmark" className="button">
-      View bookmark
-    </Link>
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        style={{ padding: "15px" }}
+      >
+        <Grid item xs={8} align="center">
+          {" "}
+          <SearchRepo handleReposSearch={this.handleSearch} />
+        </Grid>
+        {/* <Grid item xs={4}> <SearchBySelection handleSearchBy={this.handleSearchBy} /></Grid> */}
+        <Grid item xs={4}>
+          {" "}
+          <SearchBySelection handleSearchBy={this.handleSearchBy} />
+        </Grid>
+
         {this.renderPosts()}
-      </div>
+      </Grid>
     );
   }
 }
@@ -63,7 +101,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  fetchRepos
+  fetchRepos,
+  fetchUsers,
+  fetchReposByName,
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(Search);
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

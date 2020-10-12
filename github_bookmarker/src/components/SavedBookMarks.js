@@ -48,18 +48,20 @@ const handleRemoveBookMark =() =>{
 }
 
   const renderBookmarks = (bookmarks) => {
-    if (bookmarks.length == 0) return <p>No Bookmarks.</p>;
+    if (bookmarks.length == 0) return <p>You haven't yet saved any bookmarks.</p>;
 
     return (
       <React.Fragment>
-        
-        {bookmarks.map((bookmark) => (
+         <Grid container spacing={2}>
+         {bookmarks.map((bookmark) => (
           <BookMarks
             bookmark={bookmark}
             key={bookmark.id}
             handleUnSelect={handleEditDialoge}
           />
         ))}
+         </Grid>
+       
       </React.Fragment>
     );
   };

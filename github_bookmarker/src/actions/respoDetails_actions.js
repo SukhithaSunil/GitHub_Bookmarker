@@ -28,22 +28,23 @@ export const fetchReposFailure = (error) => ({
     type: FETCH_REPOS_FAILURE,
     error
 })
- async function getRepoDetails(repos) {
-    var url = `https://api.github.com/search/repositories?q=${repos}&per_page=20`;
-    var bearer = 'Bearer ' + '19eaa6d6413194be3d7d34578562f10c49cfadb9';
+ async function getRepoDetails(url) {
+   
+    var bearer = 'Bearer ' + 'bf05840183f23729472c768d0509440488141200';
     var filteredData;
     await fetch(url
-  //     , {
-  //     method: 'GET',
-  //     withCredentials: true,
-  //     headers: {
-  //         'Authorization': bearer,
-  //     }
-  // }
+      , {
+      method: 'GET',
+      withCredentials: true,
+      headers: {
+          'Authorization': bearer,
+      }
+  }
   
   ).then((response) => response.json())
       .then((data) => {
         var items = JSON.parse(JSON.stringify(data)).items;
+        if(items==undefined) items = JSON.parse(JSON.stringify(data));
         console.log(items);
          filteredData =items.map((item) => {
             var repo = {name:item.name,url:item.html_url, id:item.id,avatar:item.owner.avatar_url,owner:item.owner.login,description:item.description}
@@ -56,7 +57,20 @@ export const fetchReposFailure = (error) => ({
 export const fetchRepos = (repos) => async dispatch => {
     dispatch(fetchReposRequest());
     try {
-      const repoDetails = await getRepoDetails(repos)
+      var url = `https://api.github.com/search/repositories?q=${repos}&per_page=20`;
+      const repoDetails = await getRepoDetails(url)
+      dispatch(fetchReposSuccess(repoDetails))
+    } catch (err) {
+      dispatch(fetchReposFailure(err.toString()))
+    }
+  }
+
+
+  export const fetchReposByName = (user) => async dispatch => {
+    dispatch(fetchReposRequest());
+    try {
+      var url = `https://api.github.com/users/${user}/repos`;
+      const repoDetails = await getRepoDetails(url);
       dispatch(fetchReposSuccess(repoDetails))
     } catch (err) {
       dispatch(fetchReposFailure(err.toString()))

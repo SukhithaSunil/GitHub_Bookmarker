@@ -17,7 +17,8 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 const useStyles = makeStyles((theme) => ({
   card: {
     display: "flex",
-    minHeight: 200,
+    // minHeight: 300,
+    // maxHeight:400
   },
   cardDetails: {
     flex: 1,
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     height: 200,
   },
   root: {
-    maxWidth: 345,
+    maxWidth: 400,
   },
   small: {
     width: theme.spacing(5),
@@ -57,8 +58,9 @@ export default function BookMarks(props) {
   }
 
   return (
-    <Grid item xs={12} md={4}>
-      <Card className={classes.root}>
+    <Grid item xs={12} sm ={6} md={4} lg={4} xl={3}>
+      {/* //className={classes.root} */}
+      <Card >
         <CardHeader
           avatar={
             <Avatar
@@ -87,7 +89,7 @@ export default function BookMarks(props) {
         />
 
         <CardContent>
-          <Typography variant="subtitle1" paragraph>
+          <Typography variant="subtitle1" paragraph noWrap gutterBottom >
             {bookMark.description}
           </Typography>
         </CardContent>

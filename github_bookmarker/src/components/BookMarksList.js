@@ -9,7 +9,7 @@ import { addBookMark } from "../actions/bookmarks_actions";
 
 
 
-function BookMarksList({ repositories, selectRepositories, selectedRepository, addBookMark}) {
+function BookMarksList({ repositories, selectRepositories, selectedRepository, addBookMark, loading, error}) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickClose = () => { // close dialoge
@@ -39,16 +39,21 @@ const handleRemove = () => { //remove button ....close dialoge
   setOpen(false);
 
 }
-
+if (loading) return <p>Loading ...</p>;
+    if (error) return <p>Unable to display .</p>;
+    if (repositories.length === 0) 
+      return <div >No results</div>;
+    
   return (
     <Container maxWidth="xl">
+    
       <AddBookMarkAlert open={open} 
                   handleClose={handleClickClose} 
                           dialogeTitle="Enter a name"
                                 //  repo={""}
                                       handleBookMark={saveBookmark}
                                           handleRemove = {handleRemove}/>
-      <Grid container spacing={2}>
+      <Grid container spacing={3} style={{padding: '15px'}}>
         {/* addBookMark = {props.addBookMark} */}
         {repositories.map((bookmark) => (
           <BookMarks
@@ -66,6 +71,8 @@ const handleRemove = () => { //remove button ....close dialoge
 const mapStateToProps = (state) => ({
   repositories: state.reposDetails.repositories,
   selectedRepository: state.reposDetails.selectedRepository,
+  loading: state.reposDetails.loading,
+  error: state.reposDetails.error,
 });
 
 const mapDispatchToProps = {

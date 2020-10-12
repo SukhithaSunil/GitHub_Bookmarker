@@ -1,102 +1,75 @@
+import React from "react";
+import { connect } from "react-redux";
+import BookMarksList from "../components/BookMarksList";
+import { fetchRepos,fetchReposByName } from "../actions/respoDetails_actions";
+import SearchBySelection from "../components/SearchBySelection";
+import SearchRepo from "../components/SearchRepo";
+import Grid from "@material-ui/core/Grid";
+import { fetchUsers } from "../actions/gitUsers_actions";
+import Users from './Users';
 
- <CardActionArea component="a" rel="nooliener noreferrer" href={bookMark.url} target="_blank">
- <Card className={classes.card}>
-   <div className={classes.cardDetails}>
-     <CardContent>
-       <Typography component="h2" variant="h5">
-       {bookMark.name}
-       </Typography>
-       <Typography variant="subtitle1" color="textSecondary">
-       {bookMark.owner}
-       </Typography>
-       {/* <Typography variant="subtitle1" paragraph>
-       {bookMark.description}
-       </Typography> */}
-       <Typography variant="subtitle1" color="primary">
-         Continue reading...
-       </Typography>
-     </CardContent>
-   </div>
-   <Hidden xsDown>
-     <CardMedia className={classes.cardMedia} image={bookMark.avatar}title={bookMark.name} />
-   </Hidden>
- </Card>
-</CardActionArea>
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
+class Search extends React.Component {
+ 
+ 
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: '50%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  inline: {
-    display: 'inline',
-  },
-}));
+  state = {
+    searchType: "repos",
+  };
+  
 
-export default function BookMarks({bookMark}) {
-  const classes = useStyles();
+  handleReposSearch = (query) => {
+    console.log(query);
+    this.props.fetchRepos(query);
+  };
 
-  return (
-    <React.Fragment>
-      <ListItem alignItems="flex-start">
-        <ListItemAvatar>
-          <Avatar alt="Remy Sharp" src={bookMark.avatar} />
-        </ListItemAvatar>
-        <ListItemText
-          primary={bookMark.name}
-          secondary={
-            <React.Fragment>
-              <Typography
-                component="span"
-                variant="body2"
-                className={classes.inline}
-                color="textPrimary"
-              >
-               {bookMark.owner}
-              </Typography>
-              {` — ${bookMark.description}`}
-            </React.Fragment>
-          }
-        />
-      </ListItem>
-      <Divider variant="inset" component="li" />
-      </React.Fragment>
+  handleSearchBy = (searchBy) => {
+    console.log("seraach by");
 
-  );
-}
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import BookMarks from './BookMarks';
+    this.setState({ searchType: searchBy });
+  };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    maxWidth: '50%',
-    backgroundColor: theme.palette.background.paper,
+  handleSearch = (query) => {
+    console.log("handleSearch" + this.state.searchType);
+
+    this.state.searchType === "repos"
+      ? this.props.fetchRepos(query)
+      : this.props.fetchUsers(query);
+  };
+
+  renderPosts = () => {
+
+    
+
+    return (
+      <div>
+        {(this.state.searchType === "repos" )
+      ? <BookMarksList />
+      : <Users />}
+      </div>
+    );
+  };
+
+  render() {
+    return (
+      <Grid container justify="center" alignItems="center" style={{ padding: "15px" }}>
+         <Grid item xs={8} align = "center" > <SearchRepo handleReposSearch={this.handleSearch} /></Grid>
+         <Grid item xs={4}> <SearchBySelection handleSearchBy={this.handleSearchBy} /></Grid>
+
+       
+        {this.renderPosts()}
+      </Grid>
+    );
   }
-}));
-
-export default function BookMarksList({bookMarks}) {
-  const classes = useStyles();
-console.log(bookMarks);
-  return (
-    <List className={classes.root}>
-        {bookMarks.map((i) => (
-             <BookMarks bookMark ={i}/>
-                // <img className="photo" src={i.avatar}></img>
-              ))}
-     
-    </List>
-  );
 }
+const mapStateToProps = () => ({
+ 
+
+});
+
+const mapDispatchToProps = {
+  fetchRepos,
+  fetchUsers,
+  fetchReposByName
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search);
