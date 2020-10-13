@@ -30,7 +30,7 @@ export const fetchUserFailure = (error) => ({
 })
  async function getUserDetails(user) {
     var url = `https://api.github.com/search/users?q=${user}&per_page=20`;
-    var bearer = 'Bearer ' + 'bf05840183f23729472c768d0509440488141200';
+    var bearer = 'authToken '.concat('bf05840183f23729472c768d0509440488141200');
     var filteredData;
     await fetch(url
       , {

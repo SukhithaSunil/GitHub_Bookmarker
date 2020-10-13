@@ -27,31 +27,29 @@ class Search extends React.Component {
   handleClose = () => {
     this.setState({ open: false });
   };
-  UNSAFE_componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     console.log("componentWillReceiveProps");
-    console.log(this.props.match.params.id);
-    if (nextProps.match.params.id !== this.props.match.params.id) {
-      this.setState({ query: nextProps.match.params.id });
+    console.log(nextProps.match.params.id);
+    if (nextProps.match.params.id !== this.props.match.params.id &&(this.state.searchType != "repos")) {
+    this.setState({ query: nextProps.match.params.id });
+    this.props.fetchReposByName(nextProps.match.params.id);
+    console.log("fetchReposByName")
+    this.handleClickOpen();
 
-      this.props.fetchReposByName(nextProps.match.params.id);
-      this.handleClickOpen();
     }
+    if(nextProps.match.params.id == this.props.match.params.id&&(this.state.searchType != "repos"))
+   { this.handleClickOpen();
+    console.log("again same")
   }
-  // componentDidUpdate(prevProps) {
-  //   console.log("componentDidUpdate");
-  //   console.log(this.props.match.params.id);
-  //   if (this.state.userId !== this.props.match.params.id) {
-  //     this.setState({ userId: this.props.match.params.id });
-  //   }
 
-  // }
+  }
+
   handleSearch = (query) => {
     this.setState({ queryString: query });
     console.log("handleSearch" + this.state.searchType);
     this.state.searchType === "repos"
-      ? this.props.fetchReposByName(query)
+      ? this.props.fetchRepos(query)
       : this.props.fetchUsers(query);
-   
   };
 
   handleSearchBy = (searchBy) => {
@@ -64,10 +62,15 @@ class Search extends React.Component {
     console.log("renderPosts");
 
     return (
-      <div>
+      <React.Fragment>
         {this.state.searchType === "repos" ? <BookMarksList /> : <Users />}
-        <ResultsModal handleClose = {this.handleClose} open= {this.state.open} name={this.state.query}/>;
-      </div>
+        <ResultsModal
+          handleClose={this.handleClose}
+          open={this.state.open}
+          name={this.state.query}
+        />
+        
+      </React.Fragment>
     );
   };
 
@@ -78,18 +81,26 @@ class Search extends React.Component {
         justify="center"
         alignItems="center"
         style={{ padding: "15px" }}
+        direction={"row"}
       >
-        <Grid item xs={8} align="center">
-          {" "}
+        <Grid
+          item
+          xs={8}
+          align="center"
+          style={{
+            margin: "auto",
+            justifyContent: "center",
+            display: "flex",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
           <SearchRepo handleReposSearch={this.handleSearch} />
-        </Grid>
-        {/* <Grid item xs={4}> <SearchBySelection handleSearchBy={this.handleSearchBy} /></Grid> */}
-        <Grid item xs={4}>
-          {" "}
           <SearchBySelection handleSearchBy={this.handleSearchBy} />
         </Grid>
-
-        {this.renderPosts()}
+        <Grid item xs={12}>
+          {this.renderPosts()}
+        </Grid>
       </Grid>
     );
   }

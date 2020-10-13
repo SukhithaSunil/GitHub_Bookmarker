@@ -6,12 +6,13 @@ import { selectRepositories,unSelectRepositories } from "../actions/respoDetails
 import { connect } from "react-redux";
 import AddBookMarkAlert from "./AddBookMarkAlert";
 import { addBookMark } from "../actions/bookmarks_actions";
-
+import Skeltons from "../UI/Skeltons";
+import { useSnackbar } from 'notistack';
 
 
 function BookMarksList({ repositories, selectRepositories, selectedRepository, addBookMark, loading, error}) {
   const [open, setOpen] = React.useState(false);
-
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const handleClickClose = () => { // close dialoge
     setOpen(false);
    // unSelectRepositories();
@@ -32,6 +33,8 @@ const saveBookmark = (customizedName)=>{
     repository.saved = true; //status save
     console.log(repository.customizedName);
     addBookMark(repository);
+    enqueueSnackbar('Added Bookmark',{ variant: 'success'});
+
 }
 
 const handleRemove = () => { //remove button ....close dialoge
@@ -39,10 +42,8 @@ const handleRemove = () => { //remove button ....close dialoge
   setOpen(false);
 
 }
-if (loading) return <p>Loading ...</p>;
-    if (error) return <p>Unable to display .</p>;
-    if (repositories.length === 0) 
-      return <div >No results</div>;
+    if (error) return  enqueueSnackbar('Something went wrong',{ variant:'error'});
+  
     
   return (
     <Container maxWidth="xl">
@@ -50,23 +51,26 @@ if (loading) return <p>Loading ...</p>;
       <AddBookMarkAlert open={open} 
                   handleClose={handleClickClose} 
                           dialogeTitle="Enter a name"
-                                //  repo={""}
                                       handleBookMark={saveBookmark}
                                           handleRemove = {handleRemove}/>
-      <Grid container spacing={3} style={{padding: '15px'}}>
-        {/* addBookMark = {props.addBookMark} */}
-        {repositories.map((bookmark) => (
-          <BookMarks
-            bookmark={bookmark}
-            key={bookmark.id}
-            handleSelect={handleSelect}
-            handleUnSelect={handleUnSelect}
 
-          />
-        ))}
+      <Grid container spacing={3} style={{padding: '15px'}}>
+
+      {(loading ? Array.from(new Array(15)) : repositories).map((item) => {
+
+          if (item) {
+              return <BookMarks bookmark={item}
+              key={item.id}
+              handleSelect={handleSelect}
+              handleUnSelect={handleUnSelect} />}
+          else
+           { return (
+            <Skeltons/>
+            )}
+        })}
       </Grid>
     </Container>
-  );
+  )
 }
 const mapStateToProps = (state) => ({
   repositories: state.reposDetails.repositories,

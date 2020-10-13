@@ -30,7 +30,7 @@ export const fetchReposFailure = (error) => ({
 })
  async function getRepoDetails(url) {
    
-    var bearer = 'Bearer ' + 'bf05840183f23729472c768d0509440488141200';
+    var bearer = 'authToken ' + 'bf05840183f23729472c768d0509440488141200';
     var filteredData;
     await fetch(url
       , {

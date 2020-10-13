@@ -107,7 +107,7 @@ export default function BookMarks(props) {
         </CardActions>
       </Card>
     </Grid>
-  );
+  )
 }
 
 BookMarks.propTypes = {

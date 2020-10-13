@@ -12,12 +12,11 @@ const SearchRepo = ({ handleReposSearch }) => {
   return (
     <SearchBar
       style={{
-        width: "60%",
+        width: "50%",
         top: 80,
         alignItems: "center",
         marginbottom: 35,
         margintop: 20,
-        margin: "auto",
       }}
       value={query}
       onChange={(newValue) => setQuery(newValue)}
